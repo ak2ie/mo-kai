@@ -118,6 +118,13 @@
           </div>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col cols="12" class="text-center">
+          <v-btn color="accent" height="50" to="/login"
+            >ログインして使い始める</v-btn
+          >
+        </v-col>
+      </v-row>
     </v-container>
   </v-content>
 </template>
