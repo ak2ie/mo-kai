@@ -1,0 +1,7 @@
+{
+  "projects": {
+    "default": "itscow-a199a",
+    "mo-kai": "mo-kai",
+    "development": "mo-kai-dev"
+  }
+}

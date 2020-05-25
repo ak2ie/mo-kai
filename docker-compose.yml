@@ -1,0 +1,20 @@
+version: "3"
+services:
+    firebase:
+        image: itscow:vuetify
+        ports:
+            - 9005:9005
+            - 5000:5000
+            - 8080:8080
+            - 5001:5001
+        environment:
+            - HOST=0.0.0.0
+        expose:
+            - 5000
+        volumes:
+            - ./:/app
+        tty: true
+        working_dir: /app
+        build:
+            context: .
+            dockerfile: Dockerfile
