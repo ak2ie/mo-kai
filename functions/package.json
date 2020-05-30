@@ -1,42 +1,42 @@
 {
-    "name": "functions",
-    "scripts": {
-        "lint": "tslint --project tsconfig.json",
-        "build": "tsc",
-        "serve": "npm run build && firebase emulators:start --only functions",
-        "shell": "npm run build && firebase functions:shell",
-        "start": "npm run shell",
-        "deploy": "export GOOGLE_APPLICATION_CREDENTIALS=/app/mo-kai-e198890c8a22.json && npm run build && firebase deploy --only functions",
-        "logs": "firebase functions:log",
-        "test": "export GOOGLE_APPLICATION_CREDENTIALS=/app/functions/__tests__/mo-kai-dev-05b745193f12.json && firebase use development && ./node_modules/.bin/jest --watchAll"
-    },
-    "engines": {
-        "node": "8"
-    },
-    "main": "lib/index.js",
-    "dependencies": {
-        "@types/cors": "^2.8.6",
-        "axios": "^0.19.2",
-        "cors": "^2.8.5",
-        "express": "^4.17.1",
-        "firebase-admin": "^8.9.0",
-        "firebase-functions": "^3.3.0",
-        "moment": "^2.25.3"
-    },
-    "devDependencies": {
-        "@firebase/testing": "^0.19.2",
-        "@types/jest": "^25.2.1",
-        "@types/supertest": "^2.0.9",
-        "firebase-functions-test": "^0.1.6",
-        "firestore-jest-mock": "^0.3.0",
-        "glob": "^7.1.6",
-        "jest": "^25.5.3",
-        "jest-date-mock": "^1.0.8",
-        "supertest": "^4.0.2",
-        "ts-jest": "^25.4.0",
-        "tslint": "^5.12.0",
-        "typescript": "^3.2.2",
-        "yallist": "^4.0.0"
-    },
-    "private": true
+  "name": "functions",
+  "scripts": {
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "export GOOGLE_APPLICATION_CREDENTIALS=/app/mo-kai-e198890c8a22.json && firebase use mo-kai && npm run build && firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "test": "export GOOGLE_APPLICATION_CREDENTIALS=/app/functions/__tests__/mo-kai-dev-05b745193f12.json && firebase use development && ./node_modules/.bin/jest --watchAll"
+  },
+  "engines": {
+    "node": "10"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@types/cors": "^2.8.6",
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.9.0",
+    "firebase-functions": "^3.3.0",
+    "moment": "^2.25.3"
+  },
+  "devDependencies": {
+    "@firebase/testing": "^0.19.2",
+    "@types/jest": "^25.2.1",
+    "@types/supertest": "^2.0.9",
+    "firebase-functions-test": "^0.1.6",
+    "firestore-jest-mock": "^0.3.0",
+    "glob": "^7.1.6",
+    "jest": "^25.5.3",
+    "jest-date-mock": "^1.0.8",
+    "supertest": "^4.0.2",
+    "ts-jest": "^25.4.0",
+    "tslint": "^5.12.0",
+    "typescript": "^3.2.2",
+    "yallist": "^4.0.0"
+  },
+  "private": true
 }
