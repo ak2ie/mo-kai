@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
-import HelloWorld from "@/components/HelloWorld";
+// import HelloWorld from "@/components/HelloWorld";
 import Home from "@/components/Home";
-import Login from "@/components/Login";
+// import Login from "@/components/Login";
 import EditItem from "@/components/EditItem";
 import AddItem from "@/components/AddItem";
 import BulkAdd from "@/components/BulkAdd";
@@ -21,59 +21,65 @@ var router = new Router({
     {
       path: "/",
       name: "HelloWorld",
-      component: HelloWorld,
-      meta: { isPublic: true }
+      component: (resolve) =>
+        import(
+          /* webpackChunkName: "publicSpace" */ "@/components/HelloWorld"
+        ).then((component) => resolve(component.default)),
+      meta: { isPublic: true },
     },
     {
       path: "/home",
       name: "Home",
-      component: Home
+      component: Home,
     },
     {
       path: "/login",
       name: "Login",
-      component: Login,
+      component: (resolve) =>
+        import(
+          /* webpackChunkName: "publicSpace" */ "@/components/Login"
+        ).then((component) => resolve(component.default)),
       meta: { isPublic: true },
-      props: true
+      props: true,
     },
     {
       path: "/edit/:id",
       name: "EditItem",
       component: EditItem,
-      props: route => ({ id: Number(route.params.id) })
+      props: (route) => ({ id: Number(route.params.id) }),
     },
     {
       path: "/add",
       name: "AddItem",
-      component: AddItem
+      component: AddItem,
     },
     {
       path: "/logout",
       name: "Logout",
       component: Logout,
-      meta: { isPublic: true } // 認証後に遷移するとログアウトされてしまい意味が無い。Component内で遷移先判定
+      meta: { isPublic: true }, // 認証後に遷移するとログアウトされてしまい意味が無い。Component内で遷移先判定
     },
     {
       path: "/bulkadd",
       name: "BulkAdd",
-      component: BulkAdd
+      component: BulkAdd,
     },
     {
       path: "/intro",
       name: "Introduction",
-      component: Introduction
+      component: Introduction,
     },
     {
       path: "*",
-      redirect: { name: "HelloWorld" }
-    }
-  ]
+      redirect: { name: "HelloWorld" },
+    },
+  ],
 });
 
 // ページ表示時にログイン要否を判断
 router.beforeEach((to, from, next) => {
   // 閲覧時のログイン要否
-  let isPublic = to.matched.some(record => record.meta.isPublic);
+  let isPublic = to.matched.some((record) => record.meta.isPublic);
 
   // if (isPublic) {
   //   // ログイン不要ページ
@@ -176,7 +182,7 @@ router.beforeEach((to, from, next) => {
       // 未ログインの場合はログインページへ遷移
       next({
         path: "/login",
-        query: { redirect: to.fullPath }
+        query: { redirect: to.fullPath },
       });
       // } else {
       //   // ログアウト後はトップページに遷移

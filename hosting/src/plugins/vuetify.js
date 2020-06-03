@@ -1,6 +1,5 @@
-import "@mdi/font/css/materialdesignicons.css";
 import Vue from "vue";
-import Vuetify from "vuetify";
+import Vuetify from "vuetify/lib";
 import "vuetify/dist/vuetify.min.css";
 import colors from "vuetify/lib/util/colors";
 
@@ -12,10 +11,10 @@ const opts = {
       light: {
         primary: colors.lightGreen.darken4,
         secondary: colors.lightGreen.darken3,
-        accent: colors.lightGreen.darken2
-      }
-    }
-  }
+        accent: colors.lightGreen.darken2,
+      },
+    },
+  },
 };
 
 export default new Vuetify(opts);

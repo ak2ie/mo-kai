@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <v-container fluid>
-      <v-row justify="center" 　no-gutters>
+      <v-row justify="center" no-gutters>
         <v-col sm="6">
           <v-list two-line subheader v-show="!isLoading">
             <v-subheader>消耗品</v-subheader>
@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import Methods from "@/api/methods";
 import API from "@/api/index";
 import * as moment from "moment";
 import * as firebase from "firebase/app";
@@ -65,12 +64,12 @@ export default {
           id: 0,
           name: "",
           buyInterval: 0,
-          lastBuyDate: ""
-        }
+          lastBuyDate: "",
+        },
       ],
       isLoading: true,
       snackbar: false,
-      message: "登録完了しました"
+      message: "登録完了しました",
     };
   },
   filters: {
@@ -84,7 +83,7 @@ export default {
       } else {
         return "買い時を過ぎています";
       }
-    }
+    },
   },
   computed: {
     sortedItem: function() {
@@ -95,7 +94,7 @@ export default {
             moment(x.lastBuyDate).add(x.buyInterval, "months") -
             moment(y.lastBuyDate).add(y.buyInterval, "months")
         );
-    }
+    },
   },
   mounted: async function() {
     if (!this.$store.getters.isInitialLoaded) {
@@ -105,7 +104,7 @@ export default {
       if (userData.data.isNew) {
         const result = await firebase.auth().getRedirectResult();
         await api.post("/user/add", {
-          userId: result.additionalUserInfo.username
+          userId: result.additionalUserInfo.username,
         });
         this.$router.push("/intro");
         return;
@@ -130,11 +129,6 @@ export default {
       this.isLoading = false;
     }
   },
-  methods: {
-    itemClick: function() {
-      this.$router.push("/edit");
-    }
-  }
 };
 </script>
 

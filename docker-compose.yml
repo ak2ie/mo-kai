@@ -8,6 +8,7 @@ services:
       - 8080:8080
       - 5001:5001
       - 8888:8888 # Webpack Bundle Analyzer
+      - 8000:8000 # Vue UI
     environment:
       - HOST=0.0.0.0
     expose:

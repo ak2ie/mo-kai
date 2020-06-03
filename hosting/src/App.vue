@@ -62,26 +62,17 @@
 </template>
 
 <script>
-import * as firebase from "firebase/app";
-import "firebase/auth";
 import Firebase from "@/firebase";
 
 export default {
   name: "App",
   data: () => ({
     drawer: null,
-    isLogined: true
+    isLogined: true,
   }),
-  mounted: () => {
+  mounted: function() {
     this.drawer = false;
-    const _this = this;
-    firebase
-      .auth()
-      .onAuthStateChanged(function(user) {
-        // console.log("ログイン状態:", user ? true : false);
-        _this.isLogined = user ? true : false;
-      })
-      .bind(this);
+    this.isLogined = this.$store.getters.isSignedIn;
   },
   created: function() {
     Firebase.onAuth();
@@ -93,7 +84,7 @@ export default {
     userStatus() {
       // ログインするとtrue
       return this.$store.getters.isSignedIn;
-    }
+    },
   },
   methods: {
     logout: async function() {
@@ -115,8 +106,8 @@ export default {
           this.$router.push({ name: "HelloWorld" });
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
