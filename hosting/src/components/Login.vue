@@ -46,14 +46,14 @@ import Firebase from "@/firebase.js";
 
 export default {
   name: "Login",
-  data: {},
+  data: () => ({}),
   computed: {
     /**
      * ログイン処理中
      */
     isLogining() {
       return this.$store.getters.isSigning;
-    }
+    },
   },
   mounted: function() {
     if (this.$store.getters.isSignedIn) {
@@ -67,7 +67,7 @@ export default {
         (state, getters) => {
           return getters.isSignedIn;
         },
-        (isSignedIn, oldVal) => {
+        (isSignedIn) => {
           if (isSignedIn) {
             // ログイン中または、ログイン後にリダイレクトされた場合
             const toPath = this.$route.query.redirect
@@ -83,8 +83,8 @@ export default {
     async login() {
       this.$store.commit("onUserLogining", "logining");
       await Firebase.login();
-    }
-  }
+    },
+  },
 };
 </script>
 

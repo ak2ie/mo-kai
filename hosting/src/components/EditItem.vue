@@ -102,8 +102,6 @@
 </template>
 
 <script>
-import * as firebase from "firebase/app";
-import "firebase/auth";
 import API from "../api/index";
 
 export default {
@@ -114,17 +112,17 @@ export default {
         id: 0,
         name: "",
         buyInterval: 1,
-        lastBuyDate: ""
+        lastBuyDate: "",
       },
       rules: {
-        required: value => !!value || "文字を入力してください",
-        greaterThan0: value => {
+        required: (value) => !!value || "文字を入力してください",
+        greaterThan0: (value) => {
           if (value > 0 && value.toString() === Number(value).toString()) {
             return true;
           } else {
             return "0より大きい値を入力してください";
           }
-        }
+        },
       },
       menu2: false,
       snackbar: false,
@@ -132,11 +130,11 @@ export default {
       formValid: false,
       isLoading: true,
       deleteDialog: false,
-      isUpdating: false
+      isUpdating: false,
     };
   },
   props: {
-    id: Number
+    id: Number,
   },
   mounted: async function() {
     // const api = await API();
@@ -157,7 +155,7 @@ export default {
     if (!this.$store.getters.isInitialLoaded) {
       await this.$store.dispatch("updateItems");
     }
-    const result = this.$store.getters.items.filter(x => x.id === this.id);
+    const result = this.$store.getters.items.filter((x) => x.id === this.id);
     if (result) {
       this.$set(this.item, "id", result[0].id);
       this.$set(this.item, "name", result[0].name);
@@ -180,7 +178,7 @@ export default {
         Id: this.item.id,
         Name: this.item.name,
         LastBuyDate: new Date(this.item.lastBuyDate).toISOString(),
-        BuyInterval: Number(this.item.buyInterval)
+        BuyInterval: Number(this.item.buyInterval),
       });
       await this.$store.dispatch("updateItems");
       this.$router.push({ name: "Home", params: { is_submit: true } });
@@ -191,8 +189,8 @@ export default {
       this.deleteDialog = false;
       await this.$store.dispatch("updateItems");
       this.$router.push({ name: "Home", params: { is_submit: true } });
-    }
-  }
+    },
+  },
 };
 </script>
 

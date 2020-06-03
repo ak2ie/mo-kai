@@ -22,10 +22,10 @@ const store = new Vuex.Store({
     /**
      * 初回ロード済か
      */
-    initialLoaded: false
+    initialLoaded: false,
   },
   getters: {
-    items(state, getters, rootState, rootGetters) {
+    items(state) {
       return state.items;
     },
     user(state) {
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
     },
     isInitialLoaded(state) {
       return state.initialLoaded;
-    }
+    },
   },
   mutations: {
     /**
@@ -61,27 +61,27 @@ const store = new Vuex.Store({
     },
     onUserLogining(state, payload) {
       state.loginStatus = payload;
-    }
+    },
   },
   actions: {
-    async updateItems({ commit }, payload) {
+    async updateItems({ commit }) {
       const api = await API();
       const result = await api.get("/items/get");
-      const items = result.data.map(x => {
+      const items = result.data.map((x) => {
         return {
           id: x.Id,
           name: x.Name,
           buyInterval: x.BuyInterval,
-          lastBuyDate: x.LastBuyDate
+          lastBuyDate: x.LastBuyDate,
         };
       });
       commit("itemsType", items);
     },
     initialLoaded({ commit }, payload) {
       commit("initialLoaded", payload);
-    }
+    },
   },
-  plugins: [createPersistedState({ storage: window.sessionStorage })]
+  plugins: [createPersistedState({ storage: window.sessionStorage })],
 });
 
 export default store;

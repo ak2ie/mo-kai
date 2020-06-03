@@ -7,11 +7,12 @@ export default async () => {
     const idToken = await firebase
       .auth()
       .currentUser.getIdToken(/* forceRefresh */ true);
+    console.log(process.env.VUE_APP_API_BASEURL);
     return axios.create({
-      baseURL: process.env.API_BASEURL,
+      baseURL: process.env.VUE_APP_API_BASEURL,
       headers: {
-        Authorization: idToken
-      }
+        Authorization: idToken,
+      },
     });
   } catch (error) {
     // Handle error

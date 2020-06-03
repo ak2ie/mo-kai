@@ -10,9 +10,8 @@ const config = {
   messagingSenderId: "458970012504",
   projectId: "mo-kai",
   storageBucket: "mo-kai.appspot.com",
-  messagingSenderId: "458970012504",
   appId: "1:458970012504:web:895db70c22ae835a34232d",
-  measurementId: "G-Z22RLF287T"
+  measurementId: "G-Z22RLF287T",
 };
 
 export default {
@@ -30,10 +29,10 @@ export default {
     await firebase.auth().signOut();
   },
   onAuth() {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged((user) => {
       user = user ? user : {};
       store.commit("onAuthStateChanged", user);
       store.commit("onUserStatusChanged", user.uid ? true : false);
     });
-  }
+  },
 };

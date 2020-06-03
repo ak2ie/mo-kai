@@ -64,8 +64,6 @@
 </template>
 
 <script>
-import * as firebase from "firebase/app";
-import "firebase/auth";
 import API from "../api/index";
 
 export default {
@@ -76,23 +74,23 @@ export default {
         id: 0,
         name: "",
         buyInterval: 1,
-        lastBuyDate: ""
+        lastBuyDate: "",
       },
       rules: {
-        required: value => !!value || "文字を入力してください",
-        greaterThan0: value => {
+        required: (value) => !!value || "文字を入力してください",
+        greaterThan0: (value) => {
           if (value > 0 && value.toString() === Number(value).toString()) {
             return true;
           } else {
             return "0より大きい値を入力してください";
           }
-        }
+        },
       },
       menu2: false,
       snackbar: false,
       message: "",
       formValid: false,
-      isAdding: false
+      isAdding: false,
     };
   },
   methods: {
@@ -104,14 +102,14 @@ export default {
           {
             Name: this.item.name,
             LastBuyDate: new Date(this.item.lastBuyDate).toISOString(),
-            BuyInterval: Number(this.item.buyInterval)
-          }
-        ]
+            BuyInterval: Number(this.item.buyInterval),
+          },
+        ],
       });
       await this.$store.dispatch("updateItems");
       this.$router.push({ name: "Home", params: { is_submit: true } });
-    }
-  }
+    },
+  },
 };
 </script>
 

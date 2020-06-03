@@ -74,8 +74,6 @@
 </template>
 
 <script>
-import * as firebase from "firebase/app";
-import "firebase/auth";
 import API from "../api/index";
 
 export default {
@@ -91,39 +89,39 @@ export default {
           name: "シャンプー",
           buyInterval: 1,
           lastBuyDate: "",
-          checked: true
+          checked: true,
         },
         {
           id: 0,
           name: "リンス",
           buyInterval: 1,
           lastBuyDate: "",
-          checked: true
+          checked: true,
         },
         {
           id: 0,
           name: "洗剤",
           buyInterval: 1,
           lastBuyDate: "",
-          checked: true
-        }
+          checked: true,
+        },
       ],
       lastBuyDate: "",
       buyInterval: 1,
       rules: {
-        required: value => !!value || "文字を入力してください",
-        greaterThan0: value => {
+        required: (value) => !!value || "文字を入力してください",
+        greaterThan0: (value) => {
           if (value > 0 && value.toString() === Number(value).toString()) {
             return true;
           } else {
             return "0より大きい値を入力してください";
           }
-        }
+        },
       },
       menu2: false,
       snackbar: false,
       message: "",
-      formValid: false
+      formValid: false,
     };
   },
   mounted: function() {
@@ -137,20 +135,20 @@ export default {
     regist: async function() {
       // 一括登録する消耗品
 
-      let items = this.items.filter(item => item.checked);
-      items = items.map(item => ({
+      let items = this.items.filter((item) => item.checked);
+      items = items.map((item) => ({
         Name: item.name,
         LastBuyDate: new Date(this.lastBuyDate).toISOString(),
-        BuyInterval: Number(this.buyInterval)
+        BuyInterval: Number(this.buyInterval),
       }));
       const api = await API();
       await api.post("/items/add", {
-        Items: items
+        Items: items,
       });
       await this.$store.dispatch("updateItems");
       this.$router.push({ name: "Home", params: { is_submit: true } });
-    }
-  }
+    },
+  },
 };
 </script>
 

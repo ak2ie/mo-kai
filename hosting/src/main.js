@@ -4,8 +4,6 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import vuetify from "@/plugins/vuetify";
-import axios from "axios";
-import VueAxios from "vue-axios";
 import store from "./store.js";
 import Firebase from "./firebase";
 
@@ -21,5 +19,5 @@ new Vue({
   components: { App },
   template: "<App/>",
   vuetify,
-  store
+  store,
 });

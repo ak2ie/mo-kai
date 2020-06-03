@@ -38,7 +38,7 @@
                 <v-row justify="center">
                   <v-col md="7" cols="11" class="white--text mt-5">
                     <h2 class="title font-weight-bold">
-                      「洗剤まだあったかな？」　それ、いつでも分かります
+                      「洗剤まだあったかな？」 それ、いつでも分かります
                     </h2>
                     <p class="intro">
                       買い物に行ってから、無くなっていないか心配になる消耗品<br />
@@ -135,7 +135,7 @@ export default {
   data() {
     return {};
   },
-  methods: {}
+  methods: {},
 };
 </script>
 
