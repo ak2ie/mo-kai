@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
-// import HelloWorld from "@/components/HelloWorld";
+import HelloWorld from "@/components/HelloWorld";
 import Home from "@/components/Home";
-// import Login from "@/components/Login";
+import Login from "@/components/Login";
 import EditItem from "@/components/EditItem";
 import AddItem from "@/components/AddItem";
 import BulkAdd from "@/components/BulkAdd";
@@ -21,10 +21,7 @@ var router = new Router({
     {
       path: "/",
       name: "HelloWorld",
-      component: (resolve) =>
-        import(
-          /* webpackChunkName: "publicSpace" */ "@/components/HelloWorld"
-        ).then((component) => resolve(component.default)),
+      component: HelloWorld,
       meta: { isPublic: true },
     },
     {
@@ -35,10 +32,7 @@ var router = new Router({
     {
       path: "/login",
       name: "Login",
-      component: (resolve) =>
-        import(
-          /* webpackChunkName: "publicSpace" */ "@/components/Login"
-        ).then((component) => resolve(component.default)),
+      component: Login,
       meta: { isPublic: true },
       props: true,
     },
