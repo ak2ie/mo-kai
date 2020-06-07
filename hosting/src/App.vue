@@ -19,9 +19,14 @@
           </template>
 
           <v-list>
-            <v-list-item v-if="userStatus" @click="logout">
-              <v-list-item-title>ログアウト</v-list-item-title>
-            </v-list-item>
+            <div v-if="userStatus">
+              <v-list-item to="/profile">
+                <v-list-item-title>プロフィール</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="logout">
+                <v-list-item-title>ログアウト</v-list-item-title>
+              </v-list-item>
+            </div>
             <v-list-item v-else @click="login">
               <v-list-item-title>ログイン</v-list-item-title>
             </v-list-item>

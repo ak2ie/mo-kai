@@ -1,9 +1,19 @@
 export class Setting {
-    static COLLECTION_NAME = {
-        USERS: "Users",
-    };
+  /**
+   * Firestore コレクション名
+   */
+  static COLLECTION_NAME = {
+    /**
+     * ユーザー情報
+     */
+    USERS: "Users",
+    /**
+     * ユーザー情報（削除済）
+     */
+    DELETED_USERS: "DeletedUsers",
+  };
 
-    static DOC_NAME = {
-        ITEMS: "Items",
-    };
+  static DOC_NAME = {
+    ITEMS: "Items",
+  };
 }
