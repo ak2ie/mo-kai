@@ -8,6 +8,7 @@ import AddItem from "@/components/AddItem";
 import BulkAdd from "@/components/BulkAdd";
 import Logout from "@/components/Logout";
 import Introduction from "@/components/Introduction";
+import Profile from "@/components/Profile";
 
 import store from "@/store";
 // import firebase from "firebase/app";
@@ -62,6 +63,11 @@ var router = new Router({
       path: "/intro",
       name: "Introduction",
       component: Introduction,
+    },
+    {
+      path: "/profile",
+      name: "Profile",
+      component: Profile,
     },
     {
       path: "*",
