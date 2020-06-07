@@ -7,10 +7,17 @@ module.exports = {
   runtimeCompiler: true,
   configureWebpack: {
     plugins: [
-      // moment
+      // moment.js の肥大化対策
+      // https://momentjs.com/docs/#/use-it/webpack/
       new MomentLocalesPlugin({
         localesToKeep: ["es-us", "ja"],
       }),
     ],
+  },
+  chainWebpack: (config) => {
+    config.plugin("html").tap((args) => {
+      args[0].title = "もーかい";
+      return args;
+    });
   },
 };
