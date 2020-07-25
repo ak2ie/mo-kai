@@ -13,7 +13,7 @@
         <v-spacer></v-spacer>
         <v-menu left bottom offset-y>
           <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" v-show="isLogined">
+            <v-btn icon v-on="on" v-show="userStatus">
               <v-icon color="white">mdi-dots-vertical</v-icon>
             </v-btn>
           </template>
@@ -73,7 +73,7 @@ export default {
   name: "App",
   data: () => ({
     drawer: null,
-    isLogined: true,
+    isLogined: false,
   }),
   mounted: function() {
     this.drawer = false;

@@ -80,6 +80,10 @@ const store = new Vuex.Store({
     initialLoaded({ commit }, payload) {
       commit("initialLoaded", payload);
     },
+    deleteData({ commit }) {
+      commit("itemsType", []);
+      commit("initialLoaded", false);
+    },
   },
   plugins: [createPersistedState({ storage: window.sessionStorage })],
 });

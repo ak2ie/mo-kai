@@ -5,6 +5,7 @@ import { Item } from "./Item";
 import * as moment from "moment";
 import * as cors from "cors";
 import { Setting } from "./Setting";
+import { Discord } from "./Discord";
 const app = express();
 
 // JSON対応
@@ -257,6 +258,7 @@ app.post("/api/user/add", async (req, res) => {
             Items: [],
           });
         }
+        await Discord.SendMessage();
         res.status(200).send();
       } else {
         throw new Error("ユーザーIDが未設定");

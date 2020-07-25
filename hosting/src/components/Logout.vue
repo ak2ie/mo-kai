@@ -26,11 +26,12 @@ export default {
   computed: {},
   mounted: async function() {
     if (this.$store.getters.isSignedIn) {
+      this.$store.dispatch("deleteData");
       await Firebase.logout();
     }
     this.$router.push({ name: "HelloWorld" });
   },
-  methods: {}
+  methods: {},
 };
 </script>
 
