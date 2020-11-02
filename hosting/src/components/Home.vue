@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <VMain>
     <v-container fluid>
       <v-row justify="center" no-gutters>
         <v-col sm="6">
@@ -9,10 +9,15 @@
               <v-list-item :to="'/edit/' + item.id">
                 <v-list-item-content>
                   <v-list-item-title>{{ item.name }}</v-list-item-title>
-                  <v-list-item-subtitle>{{
+                  <!-- <v-list-item-subtitle>{{
                     item.lastBuyDate | humanizeTime(item.buyInterval)
-                  }}</v-list-item-subtitle>
+                  }}</v-list-item-subtitle> -->
                 </v-list-item-content>
+                <v-list-item-action>
+                  <v-list-item-action-text>
+                    {{ item.lastBuyDate | humanizeTime(item.buyInterval) }}
+                  </v-list-item-action-text>
+                </v-list-item-action>
               </v-list-item>
               <v-divider></v-divider>
             </div>
@@ -46,7 +51,7 @@
         </v-btn>
       </v-snackbar>
     </v-container>
-  </v-content>
+  </VMain>
 </template>
 
 <script>

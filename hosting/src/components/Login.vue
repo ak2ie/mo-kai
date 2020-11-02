@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-main>
     <v-container fluid class="fill-height mt-5">
       <!-- ログイン画面 -->
       <v-row v-if="!isLogining">
@@ -35,7 +35,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-content>
+  </v-main>
 </template>
 
 <script>
