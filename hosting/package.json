@@ -9,7 +9,7 @@
     "deploy": "firebase use mo-kai && firebase deploy --only hosting"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "firebase": "^7.17.1",
     "moment": "^2.27.0",
