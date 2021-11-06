@@ -65,6 +65,7 @@ export class Items {
                                 CreatedAt: item.CreatedAt,
                                 DeleteFlag: item.DeleteFlag,
                                 LastBuyDate: item.LastBuyDate,
+                                IsChecked: item.IsChecked
                             });
                         }
                     });
@@ -114,6 +115,7 @@ export class Items {
                     DeleteFlag: false,
                     LastBuyDate: item.LastBuyDate,
                     CreatedAt: admin.firestore.Timestamp.now(),
+                    IsChecked: item.IsChecked,
                 }),
             });
         });
@@ -150,6 +152,7 @@ export class Items {
                                 BuyInterval: item.BuyInterval,
                                 CreatedAt: itemData.CreatedAt,
                                 DeleteFlag: itemData.DeleteFlag,
+                                IsChecked: item.IsChecked
                             };
                         }
                         return itemData;
@@ -206,7 +209,8 @@ export class Items {
                     "LastBuyDate" in item &&
                     "BuyInterval" in item &&
                     "CreatedAt" in item &&
-                    "DeleteFlag" in item
+                    "DeleteFlag" in item &&
+                    "IsChecked" in item
                 );
             });
         }
@@ -242,4 +246,8 @@ export interface ItemDoc {
      * 削除フラグ（1：削除）
      */
     DeleteFlag: boolean;
+    /**
+     * チェック有無
+     */
+    IsChecked: boolean
 }

@@ -48,6 +48,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: false
             },
             {
               Id: 2,
@@ -56,6 +57,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: false
             },
           ],
         });
@@ -78,6 +80,7 @@ describe("API", () => {
           LastBuyDate: mockDate.toISOString(),
           BuyInterval: 1,
           CreatedAt: mockDate.toISOString(),
+          IsChecked: false
         },
       ]);
     });
@@ -104,6 +107,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: false,
             },
             // 取得対象
             {
@@ -113,6 +117,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 2,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: true,
             },
           ],
         });
@@ -135,6 +140,7 @@ describe("API", () => {
           LastBuyDate: mockDate.toISOString(),
           BuyInterval: 2,
           CreatedAt: mockDate.toISOString(),
+          IsChecked: true,
         },
       ]);
     });
@@ -187,6 +193,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: false,
             },
             {
               Id: 2,
@@ -195,6 +202,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: true,
             },
           ],
         });
@@ -225,6 +233,7 @@ describe("API", () => {
             LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
             BuyInterval: 1,
             CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+            IsChecked: false,
           },
           {
             Id: 2,
@@ -233,6 +242,7 @@ describe("API", () => {
             LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
             BuyInterval: 1,
             CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+            IsChecked: true,
           },
         ]);
       }
@@ -313,6 +323,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: false,
             },
           ],
         });
@@ -354,6 +365,7 @@ describe("API", () => {
             LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
             BuyInterval: 1,
             CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+            IsChecked: false,
           },
           {
             Id: 2,
@@ -366,6 +378,7 @@ describe("API", () => {
             CreatedAt: admin.firestore.Timestamp.fromDate(
               new Date() // 実行日時
             ),
+            IsChecked: false, // 初期値
           },
         ]);
       }
@@ -421,6 +434,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: false,
             },
             {
               Id: 2,
@@ -429,6 +443,7 @@ describe("API", () => {
               LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
               BuyInterval: 1,
               CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+              IsChecked: false,
             },
           ],
         });
@@ -440,6 +455,7 @@ describe("API", () => {
         Name: "消耗品2更新",
         LastBuyDate: new Date("2020-04-20T01:02:03Z").toISOString(),
         BuyInterval: 3,
+        IsChecked: true,
       };
       const response = await request(app)
         .post("/api/items/update?id=2")
@@ -467,6 +483,7 @@ describe("API", () => {
             LastBuyDate: admin.firestore.Timestamp.fromDate(mockDate),
             BuyInterval: 1,
             CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+            IsChecked: false,
           },
           {
             Id: 2,
@@ -477,6 +494,7 @@ describe("API", () => {
             ),
             BuyInterval: requestJson.BuyInterval,
             CreatedAt: admin.firestore.Timestamp.fromDate(mockDate),
+            IsChecked: true,
           },
         ]);
       }

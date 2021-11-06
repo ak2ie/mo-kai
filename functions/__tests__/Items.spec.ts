@@ -35,6 +35,7 @@ describe("消耗品：一覧取得", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: true,
                     },
                     {
                         Id: 2,
@@ -47,6 +48,7 @@ describe("消耗品：一覧取得", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: false,
                     },
                 ],
             });
@@ -68,6 +70,7 @@ describe("消耗品：一覧取得", () => {
                 LastBuyDate: admin.firestore.Timestamp.fromDate(new Date()),
                 BuyInterval: 1,
                 CreatedAt: admin.firestore.Timestamp.fromDate(new Date()),
+                IsChecked: true,
             },
         ]);
     });
@@ -94,6 +97,7 @@ describe("消耗品：一覧取得", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: false,
                     },
                     {
                         Id: 2,
@@ -106,6 +110,7 @@ describe("消耗品：一覧取得", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: true,
                     },
                 ],
             });
@@ -127,6 +132,7 @@ describe("消耗品：一覧取得", () => {
                 LastBuyDate: admin.firestore.Timestamp.fromDate(new Date()),
                 BuyInterval: 1,
                 CreatedAt: admin.firestore.Timestamp.fromDate(new Date()),
+                IsChecked: true,
             },
         ]);
     });
@@ -183,6 +189,7 @@ describe("消耗品：削除", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: false,
                     },
                     {
                         Id: 2,
@@ -195,6 +202,7 @@ describe("消耗品：削除", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: true,
                     },
                 ],
             });
@@ -222,6 +230,7 @@ describe("消耗品：削除", () => {
                     LastBuyDate: admin.firestore.Timestamp.fromDate(new Date()),
                     BuyInterval: 1,
                     CreatedAt: admin.firestore.Timestamp.fromDate(new Date()),
+                    IsChecked: false,
                 },
                 {
                     Id: 2,
@@ -230,6 +239,7 @@ describe("消耗品：削除", () => {
                     LastBuyDate: admin.firestore.Timestamp.fromDate(new Date()),
                     BuyInterval: 1,
                     CreatedAt: admin.firestore.Timestamp.fromDate(new Date()),
+                    IsChecked: true,
                 },
             ]);
         } else {
@@ -259,6 +269,7 @@ describe("消耗品：削除", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: false,
                     },
                     {
                         Id: 2,
@@ -271,6 +282,7 @@ describe("消耗品：削除", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             new Date()
                         ),
+                        IsChecked: false,
                     },
                 ],
             });
@@ -298,6 +310,7 @@ describe("消耗品：削除", () => {
                     LastBuyDate: admin.firestore.Timestamp.fromDate(new Date()),
                     BuyInterval: 1,
                     CreatedAt: admin.firestore.Timestamp.fromDate(new Date()),
+                    IsChecked: false,
                 },
                 {
                     Id: 2,
@@ -306,6 +319,7 @@ describe("消耗品：削除", () => {
                     LastBuyDate: admin.firestore.Timestamp.fromDate(new Date()),
                     BuyInterval: 1,
                     CreatedAt: admin.firestore.Timestamp.fromDate(new Date()),
+                    IsChecked: false,
                 },
             ]);
         } else {
@@ -352,6 +366,7 @@ describe("消耗品：追加", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             dummyTimestamp
                         ),
+                        IsChecked: false,
                     },
                 ],
             });
@@ -361,7 +376,7 @@ describe("消耗品：追加", () => {
          * -------------------------------------- */
         const items = new Items(db, userId);
         const lastBuyDate = new Date("2020-04-20T12:34:56Z");
-        await items.Add([new Item("消耗品2", lastBuyDate, 2, -1)]);
+        await items.Add([new Item("消耗品2", lastBuyDate, 2, -1, true)]);
 
         /* --------------------------------------
          *  テスト
@@ -384,6 +399,7 @@ describe("消耗品：追加", () => {
                     CreatedAt: admin.firestore.Timestamp.fromDate(
                         dummyTimestamp
                     ),
+                    IsChecked: false,
                 },
                 {
                     Id: 2, // 採番
@@ -394,6 +410,7 @@ describe("消耗品：追加", () => {
                     ),
                     BuyInterval: 2,
                     CreatedAt: admin.firestore.Timestamp.fromDate(freezeTime), // 現在時刻
+                    IsChecked: true,
                 },
             ]);
         } else {
@@ -427,6 +444,7 @@ describe("消耗品：追加", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             dummyTimestamp
                         ),
+                        IsChecked: false,
                     },
                 ],
             });
@@ -438,8 +456,8 @@ describe("消耗品：追加", () => {
         const lastBuyDate = new Date("2020-04-20T12:34:56Z");
         const lastBuyDate2 = new Date("2020-05-11T09:55:00Z");
         await items.Add([
-            new Item("消耗品2", lastBuyDate, 2, -1),
-            new Item("消耗品3", lastBuyDate2, 5, -1),
+            new Item("消耗品2", lastBuyDate, 2, -1, false),
+            new Item("消耗品3", lastBuyDate2, 5, -1, true),
         ]);
 
         /* --------------------------------------
@@ -463,6 +481,7 @@ describe("消耗品：追加", () => {
                     CreatedAt: admin.firestore.Timestamp.fromDate(
                         dummyTimestamp
                     ),
+                    IsChecked: false,
                 },
                 {
                     Id: 2, // 採番
@@ -473,6 +492,7 @@ describe("消耗品：追加", () => {
                     ),
                     BuyInterval: 2,
                     CreatedAt: admin.firestore.Timestamp.fromDate(freezeTime), // 現在時刻
+                    IsChecked: false,
                 },
                 {
                     Id: 3, // 採番
@@ -483,6 +503,7 @@ describe("消耗品：追加", () => {
                     ),
                     BuyInterval: 5,
                     CreatedAt: admin.firestore.Timestamp.fromDate(freezeTime), // 現在時刻
+                    IsChecked: true,
                 },
             ]);
         } else {
@@ -508,7 +529,7 @@ describe("消耗品：追加", () => {
          * -------------------------------------- */
         const items = new Items(db, userId);
         const lastBuyDate = new Date("2020-04-20T12:34:56Z");
-        await items.Add([new Item("消耗品1", lastBuyDate, 2, -1)]);
+        await items.Add([new Item("消耗品1", lastBuyDate, 2, -1, false)]);
 
         /* --------------------------------------
          *  テスト
@@ -529,6 +550,7 @@ describe("消耗品：追加", () => {
                     ),
                     BuyInterval: 2,
                     CreatedAt: admin.firestore.Timestamp.fromDate(freezeTime), // 現在時刻
+                    IsChecked: false,
                 },
             ]);
         } else {
@@ -568,6 +590,7 @@ describe("消耗品：更新", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             dummyTimestamp
                         ),
+                        IsChecked: false,
                     },
                     {
                         Id: 2,
@@ -580,6 +603,7 @@ describe("消耗品：更新", () => {
                         CreatedAt: admin.firestore.Timestamp.fromDate(
                             dummyTimestamp
                         ),
+                        IsChecked: true,
                     },
                 ],
             });
@@ -589,7 +613,7 @@ describe("消耗品：更新", () => {
          * -------------------------------------- */
         const items = new Items(db, userId);
         const lastBuyDate = new Date("2020-04-20T12:34:56Z");
-        await items.Update(new Item("消耗品2:更新", lastBuyDate, 4, 2));
+        await items.Update(new Item("消耗品2:更新", lastBuyDate, 4, 2, false));
 
         /* --------------------------------------
          *  テスト
@@ -612,6 +636,7 @@ describe("消耗品：更新", () => {
                     CreatedAt: admin.firestore.Timestamp.fromDate(
                         dummyTimestamp
                     ),
+                    IsChecked: false,
                 },
                 {
                     Id: 2,
@@ -624,6 +649,7 @@ describe("消耗品：更新", () => {
                     CreatedAt: admin.firestore.Timestamp.fromDate(
                         dummyTimestamp
                     ),
+                    IsChecked: false,
                 },
             ]);
         } else {

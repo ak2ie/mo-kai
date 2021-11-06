@@ -40,6 +40,14 @@ export class Item {
         return this._buyInterval;
     }
 
+    get IsChecked() {
+        return this._isChecked;
+    }
+
+    set IsChecked(value: boolean) {
+        this._isChecked = value;
+    }
+
     /**
      *
      * @param _name 名前
@@ -48,6 +56,7 @@ export class Item {
         private _name: string,
         private _lastBuyDate: Date,
         private _buyInterval: number,
-        private _id: number
-    ) {}
+        private _id: number,
+        private _isChecked: boolean
+    ) { }
 }

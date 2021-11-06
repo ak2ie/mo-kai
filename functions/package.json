@@ -6,9 +6,9 @@
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "export GOOGLE_APPLICATION_CREDENTIALS=/app/mo-kai-e198890c8a22.json && firebase use mo-kai && npm run build && firebase deploy --only functions",
+    "deploy": "export GOOGLE_APPLICATION_CREDENTIALS=../mo-kai-e198890c8a22.json && firebase use mo-kai && npm run build && firebase deploy --only functions",
     "logs": "firebase functions:log",
-    "test": "export GOOGLE_APPLICATION_CREDENTIALS=/app/functions/__tests__/mo-kai-dev-05b745193f12.json && firebase use development && ./node_modules/.bin/jest --watchAll"
+    "test": "export GOOGLE_APPLICATION_CREDENTIALS=./__tests__/mo-kai-dev-05b745193f12.json && firebase use development && ./node_modules/.bin/jest --watchAll"
   },
   "engines": {
     "node": "10"
