@@ -68,9 +68,7 @@
           <v-dialog v-model="deleteDialog" max-width="290">
             <v-card>
               <v-card-subtitle></v-card-subtitle>
-              <v-card-text>
-                削除してよろしいですか？
-              </v-card-text>
+              <v-card-text> 削除してよろしいですか？ </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -93,9 +91,7 @@
       </v-row>
       <v-snackbar v-model="snackbar" :multi-line="true" top>
         {{ message }}
-        <v-btn color="red" text @click="snackbar = false">
-          Close
-        </v-btn>
+        <v-btn color="red" text @click="snackbar = false"> Close </v-btn>
       </v-snackbar>
     </v-container>
   </v-main>
@@ -113,6 +109,7 @@ export default {
         name: "",
         buyInterval: 1,
         lastBuyDate: "",
+        isChecked: false,
       },
       rules: {
         required: (value) => !!value || "文字を入力してください",
@@ -136,7 +133,7 @@ export default {
   props: {
     id: Number,
   },
-  mounted: async function() {
+  mounted: async function () {
     // const api = await API();
     // try {
     //   const result = await api.get("/items/get?id=" + this.id);
@@ -165,13 +162,14 @@ export default {
         "lastBuyDate",
         new Date(result[0].lastBuyDate).toISOString().substr(0, 10)
       );
+      this.$set(this.item, "isChecked", result[0].name);
       this.isLoading = false;
     } else {
       this.$router.push({ name: "Home" });
     }
   },
   methods: {
-    updateItem: async function() {
+    updateItem: async function () {
       this.isUpdating = true;
       const api = await API();
       await api.post("/items/update?id=" + this.item.id, {
@@ -179,11 +177,12 @@ export default {
         Name: this.item.name,
         LastBuyDate: new Date(this.item.lastBuyDate).toISOString(),
         BuyInterval: Number(this.item.buyInterval),
+        IsChecked: this.item.isChecked,
       });
       await this.$store.dispatch("updateItems");
       this.$router.push({ name: "Home", params: { is_submit: true } });
     },
-    deleteItem: async function() {
+    deleteItem: async function () {
       const api = await API();
       await api.get("/items/delete?id=" + this.item.id);
       this.deleteDialog = false;
