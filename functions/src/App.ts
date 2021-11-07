@@ -98,6 +98,7 @@ app.get("/api/items/get", async (req, res) => {
             BuyInterval: item.BuyInterval,
             DeleteFlag: item.DeleteFlag,
             CreatedAt: new Date(item.CreatedAt.seconds * 1000),
+            IsChecked: item.IsChecked
           };
         })
       );
@@ -155,7 +156,8 @@ app.post("/api/items/add", async (req, res) => {
                 item.Name,
                 new Date(item.LastBuyDate),
                 item.BuyInterval,
-                -1 // IDは使用されない
+                -1, // IDは使用されない
+                false
               )
           );
 
@@ -192,7 +194,8 @@ app.post("/api/items/update", async (req, res) => {
             updateItem.Name,
             new Date(updateItem.LastBuyDate),
             updateItem.BuyInterval,
-            updateItem.Id
+            updateItem.Id,
+            updateItem.IsChecked
           )
         );
 
@@ -312,7 +315,8 @@ const isUpdateItem = (value: any): value is UpdateItem => {
       value.Id !== "" &&
       value.Name !== "" &&
       value.BuyInterval !== "" &&
-      value.LastBuyDate !== ""
+      value.LastBuyDate !== "" &&
+      value.IsChecked !== ""
     ) {
       // 数値の型確認
       const numberParsedId = Number(value.Id);
@@ -359,6 +363,10 @@ interface UpdateItem {
    * 購入間隔
    */
   BuyInterval: number;
+  /**
+   * チェック有無
+   */
+  IsChecked: boolean
 }
 
 const isAddItem = (value: any): value is AddItem => {

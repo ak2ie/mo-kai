@@ -3,11 +3,39 @@
     <v-container fluid>
       <v-row justify="center" no-gutters>
         <v-col sm="6">
+          <div class="d-flex flex-column flex-md-row">
+            <v-col class="align-self-center">消耗品</v-col>
+            <v-col class="pa-0">
+              <div class="d-flex align-self-center justify-end">
+                <v-checkbox
+                  label="表示切替"
+                  @change="isDisplayCheckbox = !isDisplayCheckbox"
+                  class="mr-10 toggle-checkbox"
+                ></v-checkbox
+                ><v-btn-toggle rounded dense class="d-flex align-self-center"
+                  ><v-btn @click="filterList" width="150"
+                    ><v-icon>mdi-filter</v-icon
+                    ><span v-if="isFiltered">チェックのみ</span
+                    ><span v-else>全表示</span></v-btn
+                  ></v-btn-toggle
+                >
+              </div>
+            </v-col>
+          </div>
           <v-list two-line subheader v-show="!isLoading">
-            <v-subheader>消耗品</v-subheader>
-            <div v-for="item in sortedItem" :key="item.id">
-              <v-list-item :to="'/edit/' + item.id">
-                <v-list-item-content>
+            <div v-for="item in items" :key="item.id">
+              <v-list-item>
+                <v-list-item-action>
+                  <v-checkbox
+                    v-show="isDisplayCheckbox"
+                    v-model="item.isChecked"
+                    @change="updateItemCheckbox(item.id)"
+                  ></v-checkbox>
+                </v-list-item-action>
+                <v-list-item-content
+                  @click="moveToEdit('/edit/' + item.id)"
+                  class="list-item"
+                >
                   <v-list-item-title>{{ item.name }}</v-list-item-title>
                   <!-- <v-list-item-subtitle>{{
                     item.lastBuyDate | humanizeTime(item.buyInterval)
@@ -46,9 +74,7 @@
       </v-row>
       <v-snackbar v-model="snackbar" :multi-line="true" top>
         {{ message }}
-        <v-btn color="red" text @click="snackbar = false">
-          Close
-        </v-btn>
+        <v-btn color="red" text @click="snackbar = false"> Close </v-btn>
       </v-snackbar>
     </v-container>
   </VMain>
@@ -70,15 +96,18 @@ export default {
           name: "",
           buyInterval: 0,
           lastBuyDate: "",
+          isChecked: false,
         },
       ],
       isLoading: true,
       snackbar: false,
       message: "登録完了しました",
+      isDisplayCheckbox: false,
+      isFiltered: false,
     };
   },
   filters: {
-    humanizeTime: function(lastBuyDate, buyInterval) {
+    humanizeTime: function (lastBuyDate, buyInterval) {
       const nextBuyDate = moment(lastBuyDate).add(buyInterval, "months");
       const remain = moment.duration(nextBuyDate.diff(new Date()));
       if (nextBuyDate >= moment()) {
@@ -91,7 +120,7 @@ export default {
     },
   },
   computed: {
-    sortedItem: function() {
+    sortedItem: function () {
       return this.items
         .slice(0)
         .sort(
@@ -101,7 +130,7 @@ export default {
         );
     },
   },
-  mounted: async function() {
+  mounted: async function () {
     if (!this.$store.getters.isInitialLoaded) {
       // 初回ロード
       const api = await API();
@@ -114,15 +143,6 @@ export default {
         this.$router.push("/intro");
         return;
       }
-      // const result = await api.get("/items/get");
-      // this.items = result.data.map(x => {
-      //   return {
-      //     id: x.Id,
-      //     name: x.Name,
-      //     buyInterval: x.BuyInterval,
-      //     lastBuyDate: x.LastBuyDate
-      //   };
-      // });
       await this.$store.dispatch("updateItems");
       this.items = this.$store.getters.items;
       this.isLoading = false;
@@ -133,6 +153,55 @@ export default {
       this.items = this.$store.getters.items;
       this.isLoading = false;
     }
+    this.SortByDate();
+  },
+  methods: {
+    /**
+     * 消耗品編集ページへ遷移
+     * @params link {string} 遷移先URL
+     */
+    moveToEdit(link) {
+      this.$router.push(link);
+    },
+    /**
+     * 消耗品をフィルター表示
+     */
+    filterList() {
+      if (this.isFiltered) {
+        this.items = this.$store.getters.items;
+        this.isFiltered = false;
+      } else {
+        this.items = this.items.filter((item) => item.isChecked);
+        this.isFiltered = true;
+      }
+      this.SortByDate();
+    },
+    /**
+     * チェックボックス選択状態を保存
+     * @param {Number} id 消耗品ID
+     */
+    async updateItemCheckbox(id) {
+      const api = await API();
+      const item = this.items.filter((x) => x.id === id);
+      await api.post("/items/update?id=" + id, {
+        Id: id,
+        Name: item[0].name,
+        LastBuyDate: new Date(item[0].lastBuyDate).toISOString(),
+        BuyInterval: Number(item[0].buyInterval),
+        IsChecked: item[0].isChecked,
+      });
+      await this.$store.dispatch("updateItems");
+    },
+
+    SortByDate() {
+      this.items = this.items
+        .slice(0)
+        .sort(
+          (x, y) =>
+            moment(x.lastBuyDate).add(x.buyInterval, "months") -
+            moment(y.lastBuyDate).add(y.buyInterval, "months")
+        );
+    },
   },
 };
 </script>
@@ -153,5 +222,11 @@ li {
 }
 a {
   color: #42b983;
+}
+.list-item {
+  cursor: pointer;
+}
+.toggle-checkbox {
+  min-width: 100px;
 }
 </style>
