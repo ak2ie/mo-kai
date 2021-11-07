@@ -3,22 +3,26 @@
     <v-container fluid>
       <v-row justify="center" no-gutters>
         <v-col sm="6">
+          <div class="d-flex flex-column flex-md-row">
+            <v-col class="align-self-center">消耗品</v-col>
+            <v-col class="pa-0">
+              <div class="d-flex align-self-center justify-end">
+                <v-checkbox
+                  label="表示切替"
+                  @change="isDisplayCheckbox = !isDisplayCheckbox"
+                  class="mr-10 toggle-checkbox"
+                ></v-checkbox
+                ><v-btn-toggle rounded dense class="d-flex align-self-center"
+                  ><v-btn @click="filterList" width="150"
+                    ><v-icon>mdi-filter</v-icon
+                    ><span v-if="isFiltered">チェックのみ</span
+                    ><span v-else>全表示</span></v-btn
+                  ></v-btn-toggle
+                >
+              </div>
+            </v-col>
+          </div>
           <v-list two-line subheader v-show="!isLoading">
-            <v-subheader
-              >消耗品<v-spacer></v-spacer
-              ><v-checkbox
-                label="表示切替"
-                @change="toggleCheckbox"
-                class="mr-10"
-              ></v-checkbox
-              ><v-btn-toggle rounded dense
-                ><v-btn @click="filterList" width="150"
-                  ><v-icon>mdi-filter</v-icon
-                  ><span v-if="isFiltered">チェックのみ</span
-                  ><span v-else>全表示</span></v-btn
-                ></v-btn-toggle
-              ></v-subheader
-            >
             <div v-for="item in items" :key="item.id">
               <v-list-item>
                 <v-list-item-action>
@@ -149,7 +153,7 @@ export default {
       this.items = this.$store.getters.items;
       this.isLoading = false;
     }
-    this.itemsForDisplay = this.items;
+    this.SortByDate();
   },
   methods: {
     /**
@@ -158,16 +162,6 @@ export default {
      */
     moveToEdit(link) {
       this.$router.push(link);
-    },
-    /**
-     * チェックボックス表示切り替え
-     */
-    toggleCheckbox() {
-      if (this.isDisplayCheckbox) {
-        this.isDisplayCheckbox = false;
-      } else {
-        this.isDisplayCheckbox = true;
-      }
     },
     /**
      * 消耗品をフィルター表示
@@ -180,25 +174,33 @@ export default {
         this.items = this.items.filter((item) => item.isChecked);
         this.isFiltered = true;
       }
+      this.SortByDate();
     },
     /**
      * チェックボックス選択状態を保存
      * @param {Number} id 消耗品ID
      */
-    updateItemCheckbox() {
-      // this.items = this.items.map((item, index) => {
-      //   if (item.id === id) {
-      //     this.$set(this.items, index, {
-      //       id: item.id,
-      //       name: item.name,
-      //       buyInterval: item.buyInterval,
-      //       lastBuyDate: item.lastBuyDate,
-      //       isChecked: !item.isChecked,
-      //     });
-      //     item["isChecked"] = false;
-      //   }
-      //   return item;
-      // });
+    async updateItemCheckbox(id) {
+      const api = await API();
+      const item = this.items.filter((x) => x.id === id);
+      await api.post("/items/update?id=" + id, {
+        Id: id,
+        Name: item[0].name,
+        LastBuyDate: new Date(item[0].lastBuyDate).toISOString(),
+        BuyInterval: Number(item[0].buyInterval),
+        IsChecked: item[0].isChecked,
+      });
+      await this.$store.dispatch("updateItems");
+    },
+
+    SortByDate() {
+      this.items = this.items
+        .slice(0)
+        .sort(
+          (x, y) =>
+            moment(x.lastBuyDate).add(x.buyInterval, "months") -
+            moment(y.lastBuyDate).add(y.buyInterval, "months")
+        );
     },
   },
 };
@@ -224,7 +226,7 @@ a {
 .list-item {
   cursor: pointer;
 }
-#toggle-display-checkbox {
-  margin-right: 100px;
+.toggle-checkbox {
+  min-width: 100px;
 }
 </style>
