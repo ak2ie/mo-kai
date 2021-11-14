@@ -23,8 +23,9 @@
             </v-col>
           </div>
           <v-list two-line subheader v-show="!isLoading">
-            <div v-for="item in items" :key="item.id">
-              <v-list-item>
+            <div v-for="(category, index) in items" :key="index">
+              <v-subheader>{{ category.categoryName }}</v-subheader>
+              <v-list-item v-for="item in category.items" :key="item.id">
                 <v-list-item-action>
                   <v-checkbox
                     v-show="isDisplayCheckbox"
@@ -50,6 +51,8 @@
               <v-divider></v-divider>
             </div>
           </v-list>
+          <!-- 消耗品が無い場合 -->
+          <div v-show="items.length == 0">表示対象の消耗品がありません。</div>
           <div v-show="isLoading" class="text-center">
             <v-progress-circular
               :indeterminate="true"
@@ -97,6 +100,7 @@ export default {
           buyInterval: 0,
           lastBuyDate: "",
           isChecked: false,
+          categoryName: "",
         },
       ],
       isLoading: true,
@@ -144,16 +148,31 @@ export default {
         return;
       }
       await this.$store.dispatch("updateItems");
-      this.items = this.$store.getters.items;
+      this.items.splice(0);
+      this.items.push(...this.$store.getters.items);
       this.isLoading = false;
+      console.log("vuex items:", this.$store.getters.items);
 
       this.$store.dispatch("initialLoaded", true);
     } else {
       // 2回目以降ロード時
-      this.items = this.$store.getters.items;
+      console.log(this.items);
+
+      this.items.splice(0);
+      console.log("vuex items:", this.$store.getters.items);
+
+      this.items.push(...this.$store.getters.items);
       this.isLoading = false;
     }
-    this.SortByDate();
+    console.log(this.items);
+    let items = this.items;
+
+    // items = this.SortByDate(this.items);
+    console.log(items);
+    // デバッグ --------------------------------
+    this.DebugSetDummyCategory();
+    // --------------------------------
+    this.Sort();
   },
   methods: {
     /**
@@ -168,13 +187,34 @@ export default {
      */
     filterList() {
       if (this.isFiltered) {
-        this.items = this.$store.getters.items;
+        // フィルター無効化
         this.isFiltered = false;
+        // 全消耗品取得
+        this.items.splice(0);
+        this.items.push(...this.$store.getters.items);
+        // ソート
+        this.DebugSetDummyCategory();
+        this.Sort();
       } else {
-        this.items = this.items.filter((item) => item.isChecked);
+        // フィルター有効化
+        const beforeCount = this.items.length;
+        this.items.map((category) => {
+          // カテゴリごとにチェック済項目を抽出
+          const checkedItems = category.items.filter((item) => item.isChecked);
+
+          if (checkedItems.length > 0) {
+            // チェック済項目がある場合は、チェック済項目のみを残す
+            this.items.push({
+              categoryName: category.categoryName,
+              items: checkedItems,
+            });
+          }
+        });
+        // フィルター有効化前に存在した項目を削除
+        this.items.splice(0, beforeCount);
+
         this.isFiltered = true;
       }
-      this.SortByDate();
     },
     /**
      * チェックボックス選択状態を保存
@@ -182,7 +222,13 @@ export default {
      */
     async updateItemCheckbox(id) {
       const api = await API();
-      const item = this.items.filter((x) => x.id === id);
+      let item = {};
+      for (let i = 0; i < this.items.length; i++) {
+        item = this.items[i].items.filter((x) => x.id === id);
+        if (item.length > 0) {
+          break;
+        }
+      }
       await api.post("/items/update?id=" + id, {
         Id: id,
         Name: item[0].name,
@@ -191,16 +237,68 @@ export default {
         IsChecked: item[0].isChecked,
       });
       await this.$store.dispatch("updateItems");
+
+      // 全消耗品取得
+      this.items.splice(0);
+      this.items.push(...this.$store.getters.items);
+      // 再ソート
+      this.DebugSetDummyCategory();
+      this.Sort();
+    },
+
+    Sort() {
+      this.SortByDate();
+      this.SetCategory();
     },
 
     SortByDate() {
-      this.items = this.items
-        .slice(0)
-        .sort(
-          (x, y) =>
-            moment(x.lastBuyDate).add(x.buyInterval, "months") -
-            moment(y.lastBuyDate).add(y.buyInterval, "months")
+      console.log("ソート前：", this.items);
+      this.items.sort(
+        (x, y) =>
+          moment(x.lastBuyDate).add(x.buyInterval, "months") -
+          moment(y.lastBuyDate).add(y.buyInterval, "months")
+      );
+      console.log("ソート後：", this.items);
+    },
+
+    SetCategory() {
+      let categorized = [];
+      this.items.map((item) => {
+        // カテゴリーが追加済か確認
+        const categoryMatched = categorized.filter(
+          (category) => item.categoryName === category.categoryName
         );
+        if (categoryMatched.length > 0) {
+          categorized.map((c) => {
+            if (c.categoryName == item.categoryName) {
+              c["items"].push(item);
+            }
+          });
+        } else {
+          categorized.push({
+            categoryName: item.categoryName,
+            items: [item],
+          });
+        }
+      });
+      categorized.sort();
+      this.items.splice(0);
+      this.items.push(...categorized);
+    },
+
+    DebugSetDummyCategory() {
+      let i = 0;
+      this.items = this.items.map((x) => {
+        i++;
+        if (i < 3) {
+          this.$set(x, "categoryName", "キッチン");
+        } else if (i < 7) {
+          this.$set(x, "categoryName", "お風呂");
+        } else {
+          this.$set(x, "categoryName", "洗面所");
+        }
+        return x;
+      });
     },
   },
 };
