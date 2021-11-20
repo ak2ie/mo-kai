@@ -17,6 +17,7 @@ app.use(cors());
  *  Firebase初期化
  * -------------------------------------------------------- */
 admin.initializeApp();
+
 const db = admin.firestore();
 
 /* --------------------------------------------------------
@@ -98,7 +99,8 @@ app.get("/api/items/get", async (req, res) => {
             BuyInterval: item.BuyInterval,
             DeleteFlag: item.DeleteFlag,
             CreatedAt: new Date(item.CreatedAt.seconds * 1000),
-            IsChecked: item.IsChecked
+            IsChecked: item.IsChecked,
+            CategoryName: item.CategoryName
           };
         })
       );
@@ -157,7 +159,8 @@ app.post("/api/items/add", async (req, res) => {
                 new Date(item.LastBuyDate),
                 item.BuyInterval,
                 -1, // IDは使用されない
-                false
+                false,
+                item.CategoryName,
               )
           );
 
@@ -195,7 +198,8 @@ app.post("/api/items/update", async (req, res) => {
             new Date(updateItem.LastBuyDate),
             updateItem.BuyInterval,
             updateItem.Id,
-            updateItem.IsChecked
+            updateItem.IsChecked,
+            updateItem.CategoryName
           )
         );
 
@@ -205,6 +209,31 @@ app.post("/api/items/update", async (req, res) => {
       throw new Error(
         "更新クエリパラメータが不正：" + JSON.stringify(req.body)
       );
+    } catch (error) {
+      console.error(error);
+      res.status(400).send();
+    }
+  }
+  res.status(403).send();
+});
+
+/**
+ * カテゴリーリスト取得
+ */
+app.get("/api/category/get", async (req, res) => {
+  const idToken = req.header("Authorization");
+  if (idToken) {
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const userId = decodedToken.uid;
+
+      const items = new Items(db, userId);
+      const categories = await items.GetCategories();
+
+      res.status(200).json({
+        categories
+      });
+      return;
     } catch (error) {
       console.error(error);
       res.status(400).send();
@@ -312,11 +341,12 @@ const isUpdateItem = (value: any): value is UpdateItem => {
   if (value) {
     // キーの存在＆設定確認
     if (
-      value.Id !== "" &&
-      value.Name !== "" &&
-      value.BuyInterval !== "" &&
-      value.LastBuyDate !== "" &&
-      value.IsChecked !== ""
+      "Id" in value &&
+      "Name" in value &&
+      "BuyInterval" in value &&
+      "LastBuyDate" in value &&
+      "IsChecked" in value &&
+      "CategoryName" in value
     ) {
       // 数値の型確認
       const numberParsedId = Number(value.Id);
@@ -366,12 +396,18 @@ interface UpdateItem {
   /**
    * チェック有無
    */
-  IsChecked: boolean
+  IsChecked: boolean;
+  /**
+   * カテゴリー
+   */
+  CategoryName: string;
 }
 
 const isAddItem = (value: any): value is AddItem => {
   const checkItem = value;
-  checkItem.Id = 1; // 追加時Idは未設定なので、チェックを通すため適当に設定
+  // チェックを通すため、追加時の未設定項目を適当に設定
+  checkItem.Id = 1;
+  checkItem.IsChecked = false;
   return isUpdateItem(checkItem);
 };
 
@@ -391,6 +427,10 @@ interface AddItem {
    * 購入間隔
    */
   BuyInterval: number;
+  /**
+   * カテゴリー
+   */
+  CategoryName: string;
 }
 
 app.post("/test", (req, res) => {

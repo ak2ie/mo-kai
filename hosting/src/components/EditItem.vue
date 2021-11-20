@@ -42,6 +42,13 @@
                 prepend-icon="mdi-refresh-circle"
                 v-model="item.buyInterval"
               ></v-text-field>
+              <v-combobox
+                label="カテゴリー"
+                persistent-hint
+                prepend-icon="mdi-label"
+                :items="categories"
+                v-model="item.categoryName"
+              ></v-combobox>
               <v-btn
                 color="light-green darken-3"
                 class="white--text mt-5"
@@ -110,6 +117,7 @@ export default {
         buyInterval: 1,
         lastBuyDate: "",
         isChecked: false,
+        categoryName: "",
       },
       rules: {
         required: (value) => !!value || "文字を入力してください",
@@ -128,6 +136,7 @@ export default {
       isLoading: true,
       deleteDialog: false,
       isUpdating: false,
+      categories: [],
     };
   },
   props: {
@@ -163,10 +172,15 @@ export default {
         new Date(result[0].lastBuyDate).toISOString().substr(0, 10)
       );
       this.$set(this.item, "isChecked", result[0].name);
+      this.$set(this.item, "categoryName", result[0].categoryName);
       this.isLoading = false;
     } else {
       this.$router.push({ name: "Home" });
     }
+
+    const api = await API();
+    const categoriesResponse = await api.get("/category/get");
+    this.categories = categoriesResponse.data.categories;
   },
   methods: {
     updateItem: async function () {
@@ -178,6 +192,7 @@ export default {
         LastBuyDate: new Date(this.item.lastBuyDate).toISOString(),
         BuyInterval: Number(this.item.buyInterval),
         IsChecked: this.item.isChecked,
+        CategoryName: this.item.categoryName,
       });
       await this.$store.dispatch("updateItems");
       this.$router.push({ name: "Home", params: { is_submit: true } });

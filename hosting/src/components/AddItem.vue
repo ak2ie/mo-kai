@@ -41,6 +41,13 @@
               prepend-icon="mdi-refresh-circle"
               v-model="item.buyInterval"
             ></v-text-field>
+            <v-combobox
+              label="カテゴリー"
+              persistent-hint
+              prepend-icon="mdi-label"
+              :items="categories"
+              v-model="item.categoryName"
+            ></v-combobox>
             <v-btn
               color="light-green darken-3"
               class="white--text mt-5"
@@ -55,9 +62,7 @@
       </v-row>
       <v-snackbar v-model="snackbar" :multi-line="true" top>
         {{ message }}
-        <v-btn color="red" text @click="snackbar = false">
-          Close
-        </v-btn>
+        <v-btn color="red" text @click="snackbar = false"> Close </v-btn>
       </v-snackbar>
     </v-container>
   </v-main>
@@ -75,6 +80,7 @@ export default {
         name: "",
         buyInterval: 1,
         lastBuyDate: "",
+        categoryName: "",
       },
       rules: {
         required: (value) => !!value || "文字を入力してください",
@@ -91,10 +97,16 @@ export default {
       message: "",
       formValid: false,
       isAdding: false,
+      categories: [],
     };
   },
+  async mounted() {
+    const api = await API();
+    const categoriesResponse = await api.get("/category/get");
+    this.categories = categoriesResponse.data.categories;
+  },
   methods: {
-    regist: async function() {
+    regist: async function () {
       this.isAdding = true;
       const api = await API();
       await api.post("/items/add", {
@@ -103,6 +115,7 @@ export default {
             Name: this.item.name,
             LastBuyDate: new Date(this.item.lastBuyDate).toISOString(),
             BuyInterval: Number(this.item.buyInterval),
+            CategoryName: this.item.categoryName,
           },
         ],
       });

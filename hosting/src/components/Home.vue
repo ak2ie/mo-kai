@@ -86,7 +86,7 @@
 <script>
 import API from "@/api/index";
 import * as moment from "moment";
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
@@ -151,27 +151,16 @@ export default {
       this.items.splice(0);
       this.items.push(...this.$store.getters.items);
       this.isLoading = false;
-      console.log("vuex items:", this.$store.getters.items);
 
       this.$store.dispatch("initialLoaded", true);
     } else {
       // 2回目以降ロード時
-      console.log(this.items);
-
       this.items.splice(0);
-      console.log("vuex items:", this.$store.getters.items);
 
       this.items.push(...this.$store.getters.items);
       this.isLoading = false;
     }
-    console.log(this.items);
-    let items = this.items;
 
-    // items = this.SortByDate(this.items);
-    console.log(items);
-    // デバッグ --------------------------------
-    this.DebugSetDummyCategory();
-    // --------------------------------
     this.Sort();
   },
   methods: {
@@ -193,7 +182,6 @@ export default {
         this.items.splice(0);
         this.items.push(...this.$store.getters.items);
         // ソート
-        this.DebugSetDummyCategory();
         this.Sort();
       } else {
         // フィルター有効化
@@ -235,6 +223,7 @@ export default {
         LastBuyDate: new Date(item[0].lastBuyDate).toISOString(),
         BuyInterval: Number(item[0].buyInterval),
         IsChecked: item[0].isChecked,
+        CategoryName: item[0].categoryName,
       });
       await this.$store.dispatch("updateItems");
 
@@ -242,7 +231,6 @@ export default {
       this.items.splice(0);
       this.items.push(...this.$store.getters.items);
       // 再ソート
-      this.DebugSetDummyCategory();
       this.Sort();
     },
 
@@ -252,13 +240,11 @@ export default {
     },
 
     SortByDate() {
-      console.log("ソート前：", this.items);
       this.items.sort(
         (x, y) =>
           moment(x.lastBuyDate).add(x.buyInterval, "months") -
           moment(y.lastBuyDate).add(y.buyInterval, "months")
       );
-      console.log("ソート後：", this.items);
     },
 
     SetCategory() {
@@ -269,36 +255,29 @@ export default {
           (category) => item.categoryName === category.categoryName
         );
         if (categoryMatched.length > 0) {
+          // カテゴリが存在する場合
           categorized.map((c) => {
             if (c.categoryName == item.categoryName) {
               c["items"].push(item);
             }
           });
         } else {
+          // カテゴリが存在しない場合は作成して追加
           categorized.push({
             categoryName: item.categoryName,
             items: [item],
           });
         }
       });
+      // カテゴリ名無しを「未分類」に設定
+      categorized.map((category) => {
+        if (category.categoryName === null) {
+          category.categoryName = "未分類";
+        }
+      });
       categorized.sort();
       this.items.splice(0);
       this.items.push(...categorized);
-    },
-
-    DebugSetDummyCategory() {
-      let i = 0;
-      this.items = this.items.map((x) => {
-        i++;
-        if (i < 3) {
-          this.$set(x, "categoryName", "キッチン");
-        } else if (i < 7) {
-          this.$set(x, "categoryName", "お風呂");
-        } else {
-          this.$set(x, "categoryName", "洗面所");
-        }
-        return x;
-      });
     },
   },
 };

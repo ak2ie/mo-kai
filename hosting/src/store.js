@@ -74,6 +74,7 @@ const store = new Vuex.Store({
           buyInterval: x.BuyInterval,
           lastBuyDate: x.LastBuyDate,
           isChecked: x.IsChecked,
+          categoryName: x.CategoryName,
         };
       });
       commit("itemsType", items);

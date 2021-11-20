@@ -1,6 +1,8 @@
 import firebase from "@firebase/app";
 import "@firebase/auth";
 import "@firebase/analytics";
+import "@firebase/functions";
+import "@firebase/firestore";
 import store from "./store";
 
 const config = {
@@ -17,6 +19,14 @@ const config = {
 export default {
   init() {
     firebase.initializeApp(config);
+
+    const isEmulating = window.location.hostname === "localhost";
+    if (isEmulating) {
+      firebase.functions().useEmulator("localhost", 5001);
+      firebase.firestore().useEmulator("localhost", 8080);
+      firebase.auth().useEmulator("http://localhost:9099");
+    }
+
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
     firebase.analytics();
   },
