@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "firebase": "^7.17.1",
+    "firebase": "^8.10.0",
     "moment": "^2.27.0",
     "moment-locales-webpack-plugin": "^1.2.0",
     "vue": "^2.6.11",

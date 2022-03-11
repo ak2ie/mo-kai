@@ -65,9 +65,7 @@
       </v-row>
       <v-snackbar v-model="snackbar" :multi-line="true" top>
         {{ message }}
-        <v-btn color="red" text @click="snackbar = false">
-          Close
-        </v-btn>
+        <v-btn color="red" text @click="snackbar = false"> Close </v-btn>
       </v-snackbar>
     </v-container>
   </v-main>
@@ -124,7 +122,7 @@ export default {
       formValid: false,
     };
   },
-  mounted: function() {
+  mounted: function () {
     // 前回購入日はデフォルトで当日とする
     this.lastBuyDate = new Date().toISOString().slice(0, 10);
   },
@@ -132,7 +130,7 @@ export default {
     /**
      * 一括登録
      */
-    regist: async function() {
+    regist: async function () {
       // 一括登録する消耗品
 
       let items = this.items.filter((item) => item.checked);
@@ -140,6 +138,8 @@ export default {
         Name: item.name,
         LastBuyDate: new Date(this.lastBuyDate).toISOString(),
         BuyInterval: Number(this.buyInterval),
+        CategoryName: null,
+        IsChecked: false,
       }));
       const api = await API();
       await api.post("/items/add", {

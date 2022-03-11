@@ -65,7 +65,8 @@ export class Items {
                                 CreatedAt: item.CreatedAt,
                                 DeleteFlag: item.DeleteFlag,
                                 LastBuyDate: item.LastBuyDate,
-                                IsChecked: item.IsChecked
+                                IsChecked: item.IsChecked,
+                                CategoryName: item.CategoryName
                             });
                         }
                     });
@@ -116,6 +117,7 @@ export class Items {
                     LastBuyDate: item.LastBuyDate,
                     CreatedAt: admin.firestore.Timestamp.now(),
                     IsChecked: item.IsChecked,
+                    CategoryName: item.CategoryName === "" ? null : item.CategoryName,
                 }),
             });
         });
@@ -152,7 +154,8 @@ export class Items {
                                 BuyInterval: item.BuyInterval,
                                 CreatedAt: itemData.CreatedAt,
                                 DeleteFlag: itemData.DeleteFlag,
-                                IsChecked: item.IsChecked
+                                IsChecked: item.IsChecked,
+                                CategoryName: item.CategoryName,
                             };
                         }
                         return itemData;
@@ -199,6 +202,34 @@ export class Items {
         }
     }
 
+    /**
+     * カテゴリー一覧を取得する
+     * @returns カテゴリー一覧
+     */
+    public async GetCategories(): Promise<string[]> {
+        const userRef = await this._db
+            .collection(Setting.COLLECTION_NAME.USERS)
+            .doc(this.userId)
+            .get();
+        const itemsDoc = userRef.data();
+        let res: Array<string> = [];
+        if (userRef.exists) {
+            if (itemsDoc !== undefined) {
+                let items = itemsDoc[Setting.DOC_NAME.ITEMS];
+
+                if (this.isItems(items)) {
+                    items.forEach((item) => {
+                        if (!item.DeleteFlag && !res.includes(item.CategoryName) &&
+                            item.CategoryName !== null && item.CategoryName !== "") {
+                            res.push(item.CategoryName);
+                        }
+                    });
+                }
+            }
+        }
+        return res;
+    }
+
     private isItems(value: any): value is Array<ItemDoc> {
         let res = false;
         if (Array.isArray(value) && value.length > 0) {
@@ -210,7 +241,8 @@ export class Items {
                     "BuyInterval" in item &&
                     "CreatedAt" in item &&
                     "DeleteFlag" in item &&
-                    "IsChecked" in item
+                    "IsChecked" in item &&
+                    "CategoryName" in item
                 );
             });
         }
@@ -249,5 +281,9 @@ export interface ItemDoc {
     /**
      * チェック有無
      */
-    IsChecked: boolean
+    IsChecked: boolean;
+    /**
+     * カテゴリー
+     */
+    CategoryName: string;
 }

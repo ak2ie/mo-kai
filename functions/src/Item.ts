@@ -48,6 +48,14 @@ export class Item {
         this._isChecked = value;
     }
 
+    get CategoryName() {
+        return this._categoryName;
+    }
+
+    set CategoryName(value) {
+        this._categoryName = value;
+    }
+
     /**
      *
      * @param _name 名前
@@ -57,6 +65,7 @@ export class Item {
         private _lastBuyDate: Date,
         private _buyInterval: number,
         private _id: number,
-        private _isChecked: boolean
+        private _isChecked: boolean,
+        private _categoryName: string
     ) { }
 }

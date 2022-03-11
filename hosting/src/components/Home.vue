@@ -23,8 +23,9 @@
             </v-col>
           </div>
           <v-list two-line subheader v-show="!isLoading">
-            <div v-for="item in items" :key="item.id">
-              <v-list-item>
+            <div v-for="(category, index) in items" :key="index">
+              <v-subheader>{{ category.categoryName }}</v-subheader>
+              <v-list-item v-for="item in category.items" :key="item.id">
                 <v-list-item-action>
                   <v-checkbox
                     v-show="isDisplayCheckbox"
@@ -50,6 +51,8 @@
               <v-divider></v-divider>
             </div>
           </v-list>
+          <!-- 消耗品が無い場合 -->
+          <div v-show="items.length == 0">表示対象の消耗品がありません。</div>
           <div v-show="isLoading" class="text-center">
             <v-progress-circular
               :indeterminate="true"
@@ -83,7 +86,7 @@
 <script>
 import API from "@/api/index";
 import * as moment from "moment";
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 
 export default {
@@ -97,6 +100,7 @@ export default {
           buyInterval: 0,
           lastBuyDate: "",
           isChecked: false,
+          categoryName: "",
         },
       ],
       isLoading: true,
@@ -144,16 +148,20 @@ export default {
         return;
       }
       await this.$store.dispatch("updateItems");
-      this.items = this.$store.getters.items;
+      this.items.splice(0);
+      this.items.push(...this.$store.getters.items);
       this.isLoading = false;
 
       this.$store.dispatch("initialLoaded", true);
     } else {
       // 2回目以降ロード時
-      this.items = this.$store.getters.items;
+      this.items.splice(0);
+
+      this.items.push(...this.$store.getters.items);
       this.isLoading = false;
     }
-    this.SortByDate();
+
+    this.Sort();
   },
   methods: {
     /**
@@ -168,13 +176,33 @@ export default {
      */
     filterList() {
       if (this.isFiltered) {
-        this.items = this.$store.getters.items;
+        // フィルター無効化
         this.isFiltered = false;
+        // 全消耗品取得
+        this.items.splice(0);
+        this.items.push(...this.$store.getters.items);
+        // ソート
+        this.Sort();
       } else {
-        this.items = this.items.filter((item) => item.isChecked);
+        // フィルター有効化
+        const beforeCount = this.items.length;
+        this.items.map((category) => {
+          // カテゴリごとにチェック済項目を抽出
+          const checkedItems = category.items.filter((item) => item.isChecked);
+
+          if (checkedItems.length > 0) {
+            // チェック済項目がある場合は、チェック済項目のみを残す
+            this.items.push({
+              categoryName: category.categoryName,
+              items: checkedItems,
+            });
+          }
+        });
+        // フィルター有効化前に存在した項目を削除
+        this.items.splice(0, beforeCount);
+
         this.isFiltered = true;
       }
-      this.SortByDate();
     },
     /**
      * チェックボックス選択状態を保存
@@ -182,25 +210,74 @@ export default {
      */
     async updateItemCheckbox(id) {
       const api = await API();
-      const item = this.items.filter((x) => x.id === id);
+      let item = {};
+      for (let i = 0; i < this.items.length; i++) {
+        item = this.items[i].items.filter((x) => x.id === id);
+        if (item.length > 0) {
+          break;
+        }
+      }
       await api.post("/items/update?id=" + id, {
         Id: id,
         Name: item[0].name,
         LastBuyDate: new Date(item[0].lastBuyDate).toISOString(),
         BuyInterval: Number(item[0].buyInterval),
         IsChecked: item[0].isChecked,
+        CategoryName: item[0].categoryName,
       });
       await this.$store.dispatch("updateItems");
+
+      // 全消耗品取得
+      this.items.splice(0);
+      this.items.push(...this.$store.getters.items);
+      // 再ソート
+      this.Sort();
+    },
+
+    Sort() {
+      this.SortByDate();
+      this.SetCategory();
     },
 
     SortByDate() {
-      this.items = this.items
-        .slice(0)
-        .sort(
-          (x, y) =>
-            moment(x.lastBuyDate).add(x.buyInterval, "months") -
-            moment(y.lastBuyDate).add(y.buyInterval, "months")
+      this.items.sort(
+        (x, y) =>
+          moment(x.lastBuyDate).add(x.buyInterval, "months") -
+          moment(y.lastBuyDate).add(y.buyInterval, "months")
+      );
+    },
+
+    SetCategory() {
+      let categorized = [];
+      this.items.map((item) => {
+        // カテゴリーが追加済か確認
+        const categoryMatched = categorized.filter(
+          (category) => item.categoryName === category.categoryName
         );
+        if (categoryMatched.length > 0) {
+          // カテゴリが存在する場合
+          categorized.map((c) => {
+            if (c.categoryName == item.categoryName) {
+              c["items"].push(item);
+            }
+          });
+        } else {
+          // カテゴリが存在しない場合は作成して追加
+          categorized.push({
+            categoryName: item.categoryName,
+            items: [item],
+          });
+        }
+      });
+      // カテゴリ名無しを「未分類」に設定
+      categorized.map((category) => {
+        if (category.categoryName === null) {
+          category.categoryName = "未分類";
+        }
+      });
+      categorized.sort();
+      this.items.splice(0);
+      this.items.push(...categorized);
     },
   },
 };
