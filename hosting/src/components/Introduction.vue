@@ -65,4 +65,8 @@ export default {
   margin-top: 100px;
   margin-bottom: 30px;
 }
+
+.mt-auto {
+  color: #000000;
+}
 </style>

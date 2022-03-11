@@ -117,7 +117,7 @@ export default {
         buyInterval: 1,
         lastBuyDate: "",
         isChecked: false,
-        categoryName: "",
+        categoryName: null,
       },
       rules: {
         required: (value) => !!value || "文字を入力してください",

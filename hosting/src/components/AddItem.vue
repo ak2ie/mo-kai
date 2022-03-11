@@ -80,7 +80,7 @@ export default {
         name: "",
         buyInterval: 1,
         lastBuyDate: "",
-        categoryName: "",
+        categoryName: null,
       },
       rules: {
         required: (value) => !!value || "文字を入力してください",

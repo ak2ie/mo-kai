@@ -117,7 +117,7 @@ export class Items {
                     LastBuyDate: item.LastBuyDate,
                     CreatedAt: admin.firestore.Timestamp.now(),
                     IsChecked: item.IsChecked,
-                    CategoryName: item.CategoryName
+                    CategoryName: item.CategoryName === "" ? null : item.CategoryName,
                 }),
             });
         });
@@ -219,7 +219,8 @@ export class Items {
 
                 if (this.isItems(items)) {
                     items.forEach((item) => {
-                        if (!item.DeleteFlag && !res.includes(item.CategoryName) && item.CategoryName !== null) {
+                        if (!item.DeleteFlag && !res.includes(item.CategoryName) &&
+                            item.CategoryName !== null && item.CategoryName !== "") {
                             res.push(item.CategoryName);
                         }
                     });
