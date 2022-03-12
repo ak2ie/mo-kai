@@ -213,7 +213,7 @@ export default {
       let item = {};
       for (let i = 0; i < this.items.length; i++) {
         item = this.items[i].items.filter((x) => x.id === id);
-        if (item.length > 0) {
+        if ("id" in item) {
           break;
         }
       }
@@ -226,12 +226,6 @@ export default {
         CategoryName: item[0].categoryName,
       });
       await this.$store.dispatch("updateItems");
-
-      // 全消耗品取得
-      this.items.splice(0);
-      this.items.push(...this.$store.getters.items);
-      // 再ソート
-      this.Sort();
     },
 
     Sort() {
