@@ -213,19 +213,45 @@ export default {
       let item = {};
       for (let i = 0; i < this.items.length; i++) {
         item = this.items[i].items.filter((x) => x.id === id);
-        if ("id" in item) {
+        if ("id" in item[0]) {
           break;
         }
       }
-      await api.post("/items/update?id=" + id, {
-        Id: id,
-        Name: item[0].name,
-        LastBuyDate: new Date(item[0].lastBuyDate).toISOString(),
-        BuyInterval: Number(item[0].buyInterval),
-        IsChecked: item[0].isChecked,
-        CategoryName: item[0].categoryName,
-      });
-      await this.$store.dispatch("updateItems");
+      try {
+        await api.post("/items/update?id=" + id, {
+          Id: id,
+          Name: item[0].name,
+          LastBuyDate: new Date(item[0].lastBuyDate).toISOString(),
+          BuyInterval: Number(item[0].buyInterval),
+          IsChecked: item[0].isChecked,
+          CategoryName: item[0].categoryName,
+        });
+        await this.$store.dispatch("updateItems");
+      } catch (e) {
+        let categoryIndex = -1;
+        let itemIndex = -1;
+        // チェックを元に戻す
+        for (let i = 0; i < this.items.length; i++) {
+          console.log(this.items[i]);
+          for (let j = 0; j < this.items[i].items.length; j++) {
+            if (this.items[i].items[j].id === id) {
+              itemIndex = j;
+              break;
+            }
+          }
+          categoryIndex = i;
+          if (itemIndex !== -1) {
+            break;
+          }
+        }
+        this.$set(
+          this.items[categoryIndex].items[itemIndex],
+          "isChecked",
+          !this.items[categoryIndex].items[itemIndex].isChecked
+        );
+        this.message = "通信に失敗しました。";
+        this.snackbar = true;
+      }
     },
 
     Sort() {
